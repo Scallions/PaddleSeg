@@ -32,13 +32,13 @@ class SegNet(nn.Layer):
         num_classes (int): The unique number of target classes.
     """
 
-    def __init__(self, num_classes, pretrained=None):
+    def __init__(self, num_classes, in_channels=3, pretrained=None):
         super().__init__()
 
         # Encoder Module
 
         self.enco1 = nn.Sequential(
-            layers.ConvBNReLU(3, 64, 3, padding=1),
+            layers.ConvBNReLU(in_channels, 64, 3, padding=1),
             layers.ConvBNReLU(64, 64, 3, padding=1))
 
         self.enco2 = nn.Sequential(
@@ -117,7 +117,7 @@ class SegNet(nn.Layer):
         x = self.enco5(x)
         x, ind5 = F.max_pool2d(x, kernel_size=2, stride=2, return_mask=True)
         size5 = x.shape
-
+        
         x = F.max_unpool2d(
             x, indices=ind5, kernel_size=2, stride=2, output_size=size4)
         x = self.deco1(x)

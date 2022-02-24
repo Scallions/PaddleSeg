@@ -212,6 +212,7 @@ class ResNet_vd(nn.Layer):
 
     def __init__(self,
                  layers=50,
+                 in_channels=3,
                  output_stride=8,
                  multi_grid=(1, 1, 1),
                  pretrained=None,
@@ -251,7 +252,7 @@ class ResNet_vd(nn.Layer):
             dilation_dict = {3: 2}
 
         self.conv1_1 = ConvBNLayer(
-            in_channels=3,
+            in_channels=in_channels,
             out_channels=32,
             kernel_size=3,
             stride=2,

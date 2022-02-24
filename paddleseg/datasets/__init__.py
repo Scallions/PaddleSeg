@@ -28,3 +28,5 @@ from .hrf import HRF
 from .chase_db1 import CHASEDB1
 from .pp_humanseg14k import PPHumanSeg14K
 from .aerialimage import AerialImage
+from .change_concat import ChangeDataset
+from .change_cva import ChangeCVADataset
