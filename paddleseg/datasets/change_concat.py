@@ -34,11 +34,11 @@ class ChangeDataset(Dataset):
         label = cv2.imread(lab_path, cv2.IMREAD_GRAYSCALE)
         if self.is_aug:
             image, label = self.transforms(im=image, label=label)
-            image = paddle.to_tensor(image).astype('float32')
+            image = image.astype('float32')
         else:
-            image = paddle.to_tensor(image.transpose(2, 0, 1)).astype('float32')
+            image = image.transpose(2, 0, 1).astype('float32')
         label = label.clip(max=1)  # 这里把0-255变为0-1，否则啥也学不到，计算出来的Kappa系数还为负数
-        label = paddle.to_tensor(label[np.newaxis, :]).astype('int64')
+        label = label.astype('int64')
         return image, label
     def __len__(self):
         return self.data_num

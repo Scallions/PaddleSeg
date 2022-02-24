@@ -34,13 +34,17 @@ optimizer:
 
 lr_scheduler:
   type: PolynomialDecay
-  learning_rate: 0.01
+  learning_rate: 2.0e-4
   end_lr: 0
   power: 0.9
 
 loss:
   types:
-    - type: BCELoss
+    - type: MixedLoss
+      losses:
+        - type: BCELoss
+        - type: LovaszSoftmaxLoss
+      coef: [0.7, 0.3]
   coef: [1]
 
 model:
