@@ -46,6 +46,7 @@ class AerialImage(Dataset):
         mode = mode.lower()
         self.mode = mode
         self.file_list = list()
+        self.img_list = list()
         self.num_classes = self.NUM_CLASSES
         self.ignore_index = 255
         self.edge = edge
@@ -79,23 +80,24 @@ class AerialImage(Dataset):
                     image_path = os.path.join(self.dataset_root, items[0])
                     grt_path = os.path.join(self.dataset_root, items[1])
                 self.file_list.append([image_path, grt_path])
+                im = cv.imread(image_path)
+                label = cv.imread(grt_path, cv.IMREAD_GRAYSCALE)
+                label = label.clip(max=1)
+                self.img_list.append([im, label])
 
     def __getitem__(self, idx):
         image_path, label_path = self.file_list[idx]
         if self.mode == 'test':
-            im = cv.imread(image_path)
+            im = self.img_list[idx][0]
             im, _ = self.transforms(im=im)
             im = im[np.newaxis, ...]
             return im, image_path
         elif self.mode == 'val':
-            im = cv.imread(image_path)
+            im, label = self.img_list[idx]
             im, _ = self.transforms(im=im)
-            label = cv.imread(label_path)[:,:,0]
-            label = label[np.newaxis, :, :]
             return im, label
         else:
-            im = cv.imread(image_path)
-            label = cv.imread(label_path)[:,:,0]
+            im, label = self.img_list[idx]
             im, label = self.transforms(im=im, label=label)
             if self.edge:
                 edge_mask = F.mask_to_binary_edge(
